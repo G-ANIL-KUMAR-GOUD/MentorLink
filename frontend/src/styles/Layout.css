@@ -24,7 +24,7 @@
 .header-left {
     display: flex;
     align-items: center;
-    gap: 40px;
+    gap: 32px;
 }
 
 .header-logo {
@@ -99,7 +99,7 @@
 /* Main Content */
 .main-content {
     flex: 1;
-    padding: 40px;
+    padding: 60px;
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
@@ -119,4 +119,51 @@
 .footer-logo {
     height: 24px;
     opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    .main-header {
+        height: 48px;
+        padding: 0 16px;
+    }
+
+    .header-left {
+        gap: 18px;
+    }
+
+    .header-logo {
+        height: 24px;
+    }
+
+    .header-title {
+        font-size: 16px;
+    }
+
+    .header-right {
+        gap: 12px;
+    }
+
+    .user-controls {
+        gap: 8px;
+        padding-left: 12px;
+    }
+
+    .profile-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+
+    .main-footer {
+        height: 40px;
+        padding: 0 16px;
+    }
+
+    .footer-logo {
+        height: 20px;
+    }
 }

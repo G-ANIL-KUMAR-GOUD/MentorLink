@@ -2,10 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
 import '../styles/Layout.css';
-import logo from '../assets/synchrony_logo_dark.png'; // Make sure this path is correct
+import logo from '../assets/synchrony_logo_dark.png';
 
 const Header = () => {
-    const userFilename = "C";
+    const userFilename = "H";
 
     return (
         <header className="main-header">
