@@ -9,7 +9,7 @@ const Header = () => {
 
     return (
         <header className="main-header">
-            <div className="header-left">
+            <div className="header-left-top">
                 <img src={logo} alt="Synchrony Logo" className="header-logo" />
                 <span className="header-title">MentorLink</span>
             </div>

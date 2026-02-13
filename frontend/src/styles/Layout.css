@@ -21,10 +21,10 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.header-left {
+.header-left-top {
     display: flex;
     align-items: center;
-    gap: 32px;
+    gap: 24px;
 }
 
 .header-logo {
@@ -35,7 +35,6 @@
 .header-title {
     font-size: 18px;
     font-weight: 600;
-    letter-spacing: 0.5px;
 }
 
 .header-right {
@@ -127,7 +126,7 @@
         padding: 0 16px;
     }
 
-    .header-left {
+    .header-left-top {
         gap: 18px;
     }
 

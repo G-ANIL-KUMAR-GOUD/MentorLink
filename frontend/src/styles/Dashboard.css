@@ -666,7 +666,7 @@
 .task-actions {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 20px;
     margin-top: 20px;
 }
 
@@ -705,6 +705,7 @@
     color: #111827;
     outline: none;
     /* Remove spinner buttons styling if needed, but standard input is okay */
+    appearance: textfield;
     -moz-appearance: textfield;
 }
 
@@ -1006,4 +1007,245 @@
 
 .popup-content-scrollable {
     padding: 28px;
+}
+
+/* Admin Page Styles */
+.admin-container {
+    width: 100%;
+}
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.admin-card {
+    background-color: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 4px 6px rgba(0, 0, 0, 0.04);
+    min-height: 200px;
+    /* Consistent height */
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 900px) {
+    .admin-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .admin-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Create Group Card Styles */
+.create-group-card {
+    cursor: pointer;
+    /* Dashed border for "add" action */
+    background-color: white;
+    /* Slightly different bg to distinguish */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+}
+
+.create-group-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    color: #3B3C43;
+}
+
+.create-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #3B3C43;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s;
+}
+
+.create-text {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Active State (Form) */
+.create-group-card.active {
+    background-color: white;
+    cursor: default;
+    transform: none;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.create-group-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    height: 100%;
+}
+
+.create-group-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.group-name-input {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+    border: none;
+    outline: none;
+    width: 100%;
+    background: transparent;
+    padding: 4px 0;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.2s;
+}
+
+.group-name-input::placeholder {
+    color: #6B7280;
+}
+
+.group-desc-input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    resize: none;
+    font-size: 14px;
+    color: #111827;
+    font-family: inherit;
+    font-weight: 400;
+    flex: 1;
+    line-height: 1.5;
+}
+
+.group-desc-input::placeholder {
+    color: #6B7280;
+}
+
+.btn-submit-group {
+    background-color: #3B3C43;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    width: 100%;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: auto;
+    /* Push to bottom */
+}
+
+/* Group Card View Mode */
+.group-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.group-card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+.group-card-desc {
+    font-size: 14px;
+    color: #6B7280;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.group-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #6B7280;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 8px;
+}
+
+.group-status-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #6B7280;
+    margin-bottom: 8px;
+}
+
+.status-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+}
+
+.group-card-divider {
+    height: 0.5px;
+    background-color: #E5E7EB;
+    width: calc(100% + 48px);
+    /* Full width + padding compensation */
+    margin-left: -24px;
+    /* Negative margin to span full width */
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.group-actions {
+    display: flex;
+    width: 100%;
+    gap: 16px;
+    margin-top: auto;
+    padding-top: 8px;
+}
+
+.btn-group-action-copy {
+    flex: 1;
+    background-color: #FBC600;
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: black;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-group-action-details {
+    flex: 1;
+    background-color: #3B3C43;
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
