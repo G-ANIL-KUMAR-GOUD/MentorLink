@@ -1,54 +1,38 @@
+import React from 'react';
+import '../styles/Dashboard.css';
+import { ChevronRight } from 'lucide-react';
 
-import '../styles/Mentee.css';
-import { UserPlus } from 'lucide-react';
-
-interface Mentor {
+interface Group {
     id: number;
     name: string;
-    email: string;
-    skills: string[];
+    createdBy: string;
+    memberCount: number;
 }
 
 const MyGroupWidget = () => {
-    // Static data for now
-    const members: Mentor[] = [
-        { id: 1, name: 'Liam Anderson', email: 'liam.anderson@example.com', skills: ['React', 'CSS', 'Redux', 'TypeScript'] },
-        { id: 2, name: 'Ava Thompson', email: 'ava.thompson@example.com', skills: ['UX Design', 'Figma', 'Prototyping', 'Wireframing'] },
-        { id: 3, name: 'Noah Martinez', email: 'noah.martinez@example.com', skills: ['Node.js', 'Express', 'MongoDB', 'REST APIs'] },
-        { id: 4, name: 'Isabella Clark', email: 'isabella.clark@example.com', skills: ['Python', 'Django', 'PostgreSQL', 'Docker'] },
-        { id: 5, name: 'Ethan Patel', email: 'ethan.patel@example.com', skills: ['Java', 'Spring Boot', 'Hibernate', 'Microservices'] },
-        { id: 6, name: 'Mia Rodriguez', email: 'mia.rodriguez@example.com', skills: ['Frontend', 'Testing', 'Jest', 'Cypress'] },
-        { id: 7, name: 'Lucas Kim', email: 'lucas.kim@example.com', skills: ['Angular', 'RxJS', 'TypeScript', 'SCSS'] },
-        { id: 8, name: 'Sophia Bennett', email: 'sophia.bennett@example.com', skills: ['Product', 'Agile', 'Scrum', 'Jira'] },
+    // Static data
+    const groups: Group[] = [
+        { id: 1, name: 'Interns 2026', createdBy: 'Ameena Shaikh', memberCount: 20 },
+        { id: 2, name: 'Interns 2025', createdBy: 'Sarah Smith', memberCount: 12 },
     ];
 
     return (
-        <div className="dashboard-card mentors-widget">
-            <div className="mentors-header">
-                <h3 className="mentors-title">Group - Interns 2026 ({members.length})</h3>
+        <div className="dashboard-card my-group-widget">
+            <div className="my-group-header">
+                <h3 className="my-group-title">My Groups ({groups.length})</h3>
             </div>
 
-            <div className="mentors-list divided-list">
-                {members.map((member) => (
-                    <div key={member.id} className="group-member-item">
-                        <div className="mentor-row">
-                            <div className="mentor-avatar">
-                                {member.name.charAt(0)}
-                            </div>
-                            <div className="mentor-details">
-                                <span className="mentor-name">{member.name}</span>
-                                <span className="mentor-skills">{member.email}</span>
+            <div className="my-group-list">
+                {groups.map((group, index) => (
+                    <React.Fragment key={group.id}>
+                        <div className="my-group-row">
+                            <div className="my-group-details">
+                                <span className="my-group-name">{group.name}</span>
+                                <span className="my-group-meta">Created by {group.createdBy} • {group.memberCount} members</span>
                             </div>
                         </div>
-                        <div className="skills-row">
-                            <span className="profile-section-title" style={{ fontSize: '11px' }}>Skills to Learn</span>
-                            <div className="skills-container">
-                                {member.skills.map((skill) => (
-                                    <span key={skill} className="skill-tag">{skill}</span>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
+                        {index < groups.length - 1 && <div className="my-group-divider" />}
+                    </React.Fragment>
                 ))}
             </div>
         </div>

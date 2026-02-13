@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Mail, Edit2, Check } from 'lucide-react';
-import '../styles/Mentee.css';
+import '../styles/Dashboard.css';
 
 interface UserProfile {
     name: string;
@@ -8,7 +8,11 @@ interface UserProfile {
     skills: string[];
 }
 
-const ProfileWidget = () => {
+interface ProfileWidgetProps {
+    variant: 'mentee' | 'mentor';
+}
+
+const ProfileWidget = ({ variant }: ProfileWidgetProps) => {
     const [isEditing, setIsEditing] = useState(false);
 
     // Name and Email are now static/managed outside of local edit state regarding their value
@@ -56,7 +60,9 @@ const ProfileWidget = () => {
 
             <div className="profile-section">
                 <div className="section-header">
-                    <span className="profile-section-title">Skills to Learn</span>
+                    <span className="profile-section-title">
+                        {variant === 'mentee' ? 'Skills to Learn' : 'Skills to Mentor'}
+                    </span>
                 </div>
 
                 {!isEditing ? (

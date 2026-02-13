@@ -4,6 +4,7 @@ import MainLayout from './layouts/MainLayout';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Mentee from './pages/Mentee';
+import Mentor from './pages/Mentor';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
 
         <Route element={<MainLayout />}>
           <Route path="/mentee" element={<Mentee />} />
+          <Route path="/mentor" element={<Mentor />} />
         </Route>
 
         <Route path="/" element={<Navigate to="/login" replace />} />
