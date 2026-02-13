@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Users, MoreHorizontal, Copy, ExternalLink, AlertCircle, CheckCircle, Info } from 'lucide-react';
+import { Users, Copy, Info } from 'lucide-react';
 import '../styles/Dashboard.css';
 
 export interface GroupData {
@@ -15,16 +15,18 @@ interface GroupCardProps {
     group: GroupData;
     initialEditMode?: boolean;
     onSave: (id: number, name: string, description: string) => void;
+    onDetails: (group: GroupData) => void;
 }
 
-const GroupCard: React.FC<GroupCardProps> = ({ group, initialEditMode = false, onSave }) => {
+const GroupCard: React.FC<GroupCardProps> = ({ group, initialEditMode = false, onSave, onDetails }) => {
     const [isEditing, setIsEditing] = useState(initialEditMode);
     const [name, setName] = useState(group.name);
-    const [description, setDescription] = useState(group.description || '');
+    // Description field removed from UI, keeping generic/empty for now
+    const description = group.description || '';
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (name.trim() && description.trim()) {
+        if (name.trim()) {
             onSave(group.id, name, description);
             setIsEditing(false);
         }
@@ -46,21 +48,13 @@ const GroupCard: React.FC<GroupCardProps> = ({ group, initialEditMode = false, o
                     <div className="create-group-header">
                         <input
                             type="text"
-                            placeholder="Group Name"
+                            placeholder="Enter Group Name"
                             className="group-name-input"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             autoFocus
                         />
                     </div>
-
-                    <textarea
-                        placeholder="Enter Group Description here..."
-                        className="group-desc-input"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        rows={3}
-                    />
 
                     <button type="submit" className="btn-submit-group">
                         Create Group
@@ -96,9 +90,11 @@ const GroupCard: React.FC<GroupCardProps> = ({ group, initialEditMode = false, o
             {/* Actions */}
             <div className="group-actions">
                 <button className="btn-group-action-copy">
+                    <Copy size={16} style={{ marginRight: '8px' }} />
                     Copy Link
                 </button>
-                <button className="btn-group-action-details">
+                <button className="btn-group-action-details" onClick={() => onDetails(group)}>
+                    <Info size={16} style={{ marginRight: '8px', marginTop: '1px' }} />
                     See Details
                 </button>
             </div>

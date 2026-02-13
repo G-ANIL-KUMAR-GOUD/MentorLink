@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import '../styles/Dashboard.css';
 import CreateGroupCard from '../components/CreateGroupCard';
 import GroupCard, { type GroupData } from '../components/GroupCard';
+import GroupDetailsPopup from '../components/GroupDetailsPopup';
 
 const Admin = () => {
     const [groups, setGroups] = useState<GroupData[]>([
@@ -45,7 +46,20 @@ const Admin = () => {
         setIsCreating(true);
     };
 
-    const handleSaveNewGroup = (id: number, name: string, description: string) => {
+    const [selectedGroup, setSelectedGroup] = useState<GroupData | null>(null);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+    const handleOpenDetails = (group: GroupData) => {
+        setSelectedGroup(group);
+        setIsPopupOpen(true);
+    };
+
+    const handleCloseDetails = () => {
+        setIsPopupOpen(false);
+        setSelectedGroup(null);
+    };
+
+    const handleSaveNewGroup = (_: number, name: string, description: string) => {
         // id is 0 here from the temp card, so ignore it and generate new
         const newGroup: GroupData = {
             id: Date.now(),
@@ -90,6 +104,7 @@ const Admin = () => {
                         }}
                         initialEditMode={true}
                         onSave={handleSaveNewGroup}
+                        onDetails={() => { }}
                     />
                 )}
 
@@ -100,9 +115,15 @@ const Admin = () => {
                         group={group}
                         initialEditMode={false}
                         onSave={handleUpdateGroup}
+                        onDetails={handleOpenDetails}
                     />
                 ))}
             </div>
+            <GroupDetailsPopup
+                isOpen={isPopupOpen}
+                onClose={handleCloseDetails}
+                group={selectedGroup}
+            />
         </div>
     );
 };
