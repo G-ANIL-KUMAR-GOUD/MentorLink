@@ -7,10 +7,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "mentor_mentee_map")
-@Getter
-@Setter
+@Getter @Setter
 public class MentorMenteeMap {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long mapId;
@@ -23,11 +21,11 @@ public class MentorMenteeMap {
     @JoinColumn(name = "mentee_id", nullable = false)
     private MenteeProfile mentee;
 
-    @Column(nullable = false)
-    private Long batchId; // FK to Batch (Phase 2)
+    @ManyToOne
+    @JoinColumn(name = "batch_id", nullable = false)
+    private Batch batch;
 
     private String focusArea;   // e.g. "Java", "Leadership"
-    private String status;      // e.g. "REQUESTED", "APPROVED", "ACTIVE"
-
+    private String status;      // REQUESTED, APPROVED, ACTIVE
     private LocalDateTime createdAt = LocalDateTime.now();
 }
