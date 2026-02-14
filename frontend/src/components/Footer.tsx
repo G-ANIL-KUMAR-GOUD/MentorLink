@@ -1,6 +1,6 @@
 import React from 'react';
 import '../styles/Layout.css';
-import logo from '../assets/synchrony_logo_dark.png';
+import logo from '../assets/innovation_station_logo.png';
 
 const Footer = () => {
     return (
