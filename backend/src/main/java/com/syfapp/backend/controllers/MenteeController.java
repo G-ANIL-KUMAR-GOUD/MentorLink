@@ -1,15 +1,14 @@
 package com.syfapp.backend.controllers;
 
 import com.syfapp.backend.models.MenteeProfile;
-;
+
 import com.syfapp.backend.services.MenteeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
 @RestController
 @RequestMapping("/api/mentees")
 @RequiredArgsConstructor

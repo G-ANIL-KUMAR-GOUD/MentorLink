@@ -8,10 +8,14 @@ import java.io.Serializable;
 
 @Embeddable
 @Getter
-@Setter @EqualsAndHashCode
+@Setter
+@EqualsAndHashCode
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserRoleId implements Serializable {
 
     private Long userId;
     private Long roleId;
     private Long batchId;
+
 }

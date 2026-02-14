@@ -1,5 +1,6 @@
 package com.syfapp.backend.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,6 +34,7 @@ public class User {
 
     
     @OneToMany(mappedBy = "user")
+    @JsonManagedReference
     private List<UserRole> userRoles;
 }
 
