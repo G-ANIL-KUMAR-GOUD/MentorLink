@@ -7,6 +7,7 @@ import com.syfapp.backend.models.User;
 import com.syfapp.backend.models.UserRole;
 import com.syfapp.backend.repositories.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,22 +23,31 @@ public class AdminService {
     private final MentorMenteeMapRepository mentorMenteeMapRepository;
     private final TaskRepository taskRepository;
 
-    // Create a Manager user
+    private final UserRoleRepository userRoleRepository;
+    private final PasswordEncoder passwordEncoder;
+
+
     public User createManager(User user) {
-        Role managerRole = roleRepository.findByRoleName("MANAGER")
-                .orElseThrow(() -> new RuntimeException("MANAGER role not found"));
+
+        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
+
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
+
         User savedUser = userRepository.save(user);
 
-        // Assign MANAGER role
+        Role managerRole = roleRepository.findByRoleName("MANAGER")
+                .orElseThrow(() -> new RuntimeException("MANAGER role not found"));
+
         UserRole userRole = new UserRole();
         userRole.setUser(savedUser);
         userRole.setRole(managerRole);
-        // persist via UserRoleRepository if needed
+
+        userRoleRepository.save(userRole);
 
         return savedUser;
     }
+
 
     // Assign Manager to a Batch
     public String assignManagerToBatch(Long batchId, Long managerId) {
