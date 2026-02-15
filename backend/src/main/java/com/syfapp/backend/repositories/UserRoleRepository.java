@@ -13,6 +13,8 @@ public interface UserRoleRepository extends JpaRepository<UserRole, UserRoleId> 
     List<UserRole> findByUser_UserId(Long userId);
     List<UserRole> findByRole_RoleId(Long roleId);
 
+    List<UserRole> findByUserUserId(Long userId);
+
     @Query("""
             SELECT COUNT(ur.user)
             FROM UserRole ur
