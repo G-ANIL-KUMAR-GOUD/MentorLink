@@ -31,6 +31,8 @@ public class MenteeProfile {
     @Column(columnDefinition = "TEXT")
     private String interests;
 
+    @ManyToOne
+    private Batch batch;
 
     @ManyToMany
     @JoinTable(

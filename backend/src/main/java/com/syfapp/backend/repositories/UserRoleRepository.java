@@ -3,6 +3,7 @@ package com.syfapp.backend.repositories;
 import com.syfapp.backend.models.UserRole;
 import com.syfapp.backend.models.UserRoleId;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,5 +12,13 @@ import java.util.List;
 public interface UserRoleRepository extends JpaRepository<UserRole, UserRoleId> {
     List<UserRole> findByUser_UserId(Long userId);
     List<UserRole> findByRole_RoleId(Long roleId);
+
+    @Query("""
+            SELECT COUNT(ur.user)
+            FROM UserRole ur
+            WHERE ur.role.roleName = :roleName
+            """)
+    long countUsersByRole(String roleName);
+
 }
 
