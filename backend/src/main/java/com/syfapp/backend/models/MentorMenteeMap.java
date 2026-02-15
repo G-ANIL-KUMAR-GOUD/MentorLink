@@ -26,6 +26,6 @@ public class MentorMenteeMap {
     private Batch batch;
 
     private String focusArea;   // e.g. "Java", "Leadership"
-    private String status;      // REQUESTED, APPROVED, ACTIVE
+    private String status ="ACTIVE" ;      // REQUESTED, APPROVED, ACTIVE
     private LocalDateTime createdAt = LocalDateTime.now();
 }

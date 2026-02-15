@@ -1,16 +1,19 @@
 package com.syfapp.backend.controllers;
 
+import com.syfapp.backend.dtos.*;
 import com.syfapp.backend.models.MentorProfile;
 
 
+import com.syfapp.backend.models.Task;
+import com.syfapp.backend.services.MentorSearchService;
 import com.syfapp.backend.services.MentorService;
+import com.syfapp.backend.services.MentorshipRequestService;
+import com.syfapp.backend.services.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/mentors")
@@ -18,6 +21,9 @@ import java.util.Set;
 public class MentorController {
 
     private final MentorService mentorService;
+    private final MentorshipRequestService mentorshipRequestService;
+    private final MentorSearchService mentorSearchService;
+    private final TaskService taskService;
 
     @GetMapping
     public List<MentorProfile> getAllMentors() {
@@ -48,4 +54,52 @@ public class MentorController {
     public MentorProfile removeSkill(@PathVariable Long id, @PathVariable Long skillId) {
         return mentorService.removeSkill(id, skillId);
     }
+
+    @GetMapping("/{mentorId}/requests")
+    public ResponseEntity<List<MentorshipRequestResponseDTO>> getPendingRequests(
+            @PathVariable Long mentorId) {
+
+        return ResponseEntity.ok(
+                mentorshipRequestService.getPendingRequestsForMentor(mentorId)
+        );
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<MentorSearchResponseDTO>> searchMentors(
+            @RequestParam String skills) {
+
+        return ResponseEntity.ok(
+                mentorSearchService.searchMentorsBySkills(skills)
+        );
+    }
+
+    @PutMapping("/requests/{requestId}/approve")
+    public ResponseEntity<String> approveRequest(@PathVariable Long requestId) {
+
+        return ResponseEntity.ok(
+                mentorshipRequestService.approveRequest(requestId)
+        );
+    }
+
+    @PostMapping("/tasks/assign")
+    public ResponseEntity<TaskResponseDTO> assignTask(@RequestBody AssignTaskDTO dto) {
+
+        return ResponseEntity.ok(taskService.assignTask(dto));
+    }
+
+    @GetMapping("/{mentorId}/mentees")
+    public ResponseEntity<List<MentorMenteeDTO>> getMenteesForMentor(
+            @PathVariable Long mentorId) {
+
+        return ResponseEntity.ok(
+                mentorService.getMenteesForMentor(mentorId)
+        );
+    }
+
+
+
+
+
+
+
 }

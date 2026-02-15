@@ -1,7 +1,9 @@
 package com.syfapp.backend.services;
 
+import com.syfapp.backend.dtos.MentorMenteeDTO;
 import com.syfapp.backend.models.MentorProfile;
 import com.syfapp.backend.models.Skill;
+import com.syfapp.backend.repositories.MentorMenteeMapRepository;
 import com.syfapp.backend.repositories.MentorProfileRepository;
 import com.syfapp.backend.repositories.SkillRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,8 @@ public class MentorService {
 
     private final MentorProfileRepository mentorProfileRepository;
     private final SkillRepository skillRepository;
+    private final MentorMenteeMapRepository mentorMenteeMapRepository;
+
 
     public List<MentorProfile> getAllMentors() {
         return mentorProfileRepository.findAll();
@@ -53,4 +57,18 @@ public class MentorService {
         mentor.getSkills().remove(skill);
         return mentorProfileRepository.save(mentor);
     }
+
+    public List<MentorMenteeDTO> getMenteesForMentor(Long mentorId) {
+
+        return mentorMenteeMapRepository.findByMentorUserId(mentorId)
+                .stream()
+                .map(map -> MentorMenteeDTO.builder()
+                        .menteeId(map.getMentee().getUser().getUserId())
+                        .menteeName(map.getMentee().getUser().getName())
+                        .batchName(map.getBatch().getBatchName())
+                        .mappingStatus(map.getStatus())
+                        .build())
+                .toList();
+    }
+
 }

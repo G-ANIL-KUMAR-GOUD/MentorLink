@@ -1,8 +1,14 @@
 package com.syfapp.backend.controllers;
 
+import com.syfapp.backend.dtos.MentorRequestDTO;
+import com.syfapp.backend.dtos.MentorshipRequestResponseDTO;
+import com.syfapp.backend.dtos.TaskResponseDTO;
 import com.syfapp.backend.models.MenteeProfile;
 
+import com.syfapp.backend.models.MentorshipRequest;
 import com.syfapp.backend.services.MenteeService;
+import com.syfapp.backend.services.MentorshipRequestService;
+import com.syfapp.backend.services.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +20,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MenteeController {
 
+    private final MentorshipRequestService mentorshipRequestService;
+    private final TaskService taskService;
     private final MenteeService menteeService;
 
     @GetMapping
@@ -45,4 +53,39 @@ public class MenteeController {
     public MenteeProfile removeSkill(@PathVariable Long id, @PathVariable Long skillId) {
         return menteeService.removeSkill(id, skillId);
     }
+
+    @PostMapping("/{menteeId}/request-mentor")
+    public ResponseEntity<MentorshipRequestResponseDTO> requestMentor(
+            @PathVariable Long menteeId,
+            @RequestBody MentorRequestDTO dto) {
+
+        return ResponseEntity.ok(
+                mentorshipRequestService.sendRequest(dto.getMentorId(), menteeId)
+        );
+    }
+
+    @PutMapping("/tasks/{taskId}/status")
+    public ResponseEntity<TaskResponseDTO> updateTaskStatus(
+            @PathVariable Long taskId,
+            @RequestParam String status) {
+
+        return ResponseEntity.ok(
+                taskService.updateTaskStatus(taskId, status)
+        );
+    }
+
+    @GetMapping("/{menteeId}/tasks")
+    public ResponseEntity<List<TaskResponseDTO>> getTasksForMentee(
+            @PathVariable Long menteeId) {
+
+        return ResponseEntity.ok(
+                taskService.getTasksForMentee(menteeId)
+        );
+    }
+
+
+
+
+
+
 }

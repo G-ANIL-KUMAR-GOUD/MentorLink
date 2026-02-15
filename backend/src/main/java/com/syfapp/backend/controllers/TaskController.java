@@ -16,25 +16,30 @@ public class TaskController {
 
     private final TaskService taskService;
 
-    // Assign a new task
-    @PostMapping("/assign")
-    public Task assignTask(@RequestParam Long mapId,
-                           @RequestParam String description,
-                           @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dueDate) {
-        return taskService.assignTask(mapId, description, dueDate);
-    }
+//    // Assign a new task
+//    @PostMapping("/assign")
+//    public Task assignTask(@RequestParam Long mapId,
+//                           @RequestParam String description,
+//                           @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dueDate) {
+//        return taskService.assignTask(mapId, description, dueDate);
+//    }
+//    Anil : shifted to mentor controller, its me
 
     // Update task status
-    @PutMapping("/{taskId}/status")
-    public Task updateTaskStatus(@PathVariable Long taskId, @RequestParam String status) {
-        return taskService.updateTaskStatus(taskId, status);
-    }
+//    @PutMapping("/{taskId}/status")
+//    public Task updateTaskStatus(@PathVariable Long taskId, @RequestParam String status) {
+//        return taskService.updateTaskStatus(taskId, status);
+//    }
+
+    //method moved to mentee controller - by Anil
 
     // Get tasks for a mentee
-    @GetMapping("/mentee/{menteeId}")
-    public List<Task> getTasksForMentee(@PathVariable Long menteeId) {
-        return taskService.getTasksForMentee(menteeId);
-    }
+//    @GetMapping("/mentee/{menteeId}")
+//    public List<Task> getTasksForMentee(@PathVariable Long menteeId) {
+//        return taskService.getTasksForMentee(menteeId);
+//    }
+
+    //method moved to mentee controller - by Anil
 
     // Get tasks for a mentor
     @GetMapping("/mentor/{mentorId}")

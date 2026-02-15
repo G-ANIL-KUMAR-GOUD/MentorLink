@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "batches")
@@ -21,5 +22,10 @@ public class Batch {
 
     @ManyToOne
     @JoinColumn(name = "manager_id")
-    private User manager; // Admin can reassign
+    private User manager;
+
+    @OneToMany(mappedBy = "batch")
+    private List<MenteeProfile> mentees;
+
+
 }
