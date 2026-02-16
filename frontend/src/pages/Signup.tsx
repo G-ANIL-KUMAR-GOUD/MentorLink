@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { userApi, roleApi, userRoleApi, batchApi } from "../services/api";
+import {
+  userApi,
+  roleApi,
+  userRoleApi,
+  batchApi,
+  mentorProfileApi,
+  menteeProfileApi,
+} from "../services/api";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -9,6 +16,17 @@ const Signup = () => {
     password: "",
     phone: "",
     role: "mentee", // default role
+    // Mentor-specific fields
+    headline: "",
+    experienceYears: 0,
+    expertiseArea: "",
+    linkedinUrl: "",
+    availability: "",
+    // Mentee-specific fields
+    currentRole: "",
+    education: "",
+    goals: "",
+    interests: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -24,8 +42,8 @@ const Signup = () => {
       const newUser = await userApi.createUser({
         name: formData.name,
         email: formData.email,
-        password: formData.password,
-        phone: formData.phone,
+        passwordHash: formData.password,
+        profileInfo: formData.phone,
       });
 
       // Get all roles to find the selected role
@@ -46,6 +64,34 @@ const Signup = () => {
             selectedRole.roleId,
             defaultBatch.batchId,
           );
+        }
+      }
+
+      // Create role-specific profile using mentorProfileApi / menteeProfileApi
+      if (formData.role === "mentor") {
+        try {
+          await mentorProfileApi.createMentorProfile({
+            userId: newUser.userId,
+            headline: formData.headline || "New Mentor",
+            experienceYears: formData.experienceYears || 0,
+            expertiseArea: formData.expertiseArea || "General",
+            linkedinUrl: formData.linkedinUrl || undefined,
+            availability: formData.availability || undefined,
+          });
+        } catch (profileErr) {
+          console.error("Error creating mentor profile:", profileErr);
+        }
+      } else if (formData.role === "mentee") {
+        try {
+          await menteeProfileApi.createMenteeProfile({
+            userId: newUser.userId,
+            currentRole: formData.currentRole || "New Mentee",
+            education: formData.education || "",
+            goals: formData.goals || "",
+            interests: formData.interests || "",
+          });
+        } catch (profileErr) {
+          console.error("Error creating mentee profile:", profileErr);
         }
       }
 
@@ -172,6 +218,153 @@ const Signup = () => {
             <option value="admin">Admin</option>
           </select>
         </div>
+
+        {/* Mentor-specific fields — used by mentorProfileApi.createMentorProfile */}
+        {formData.role === "mentor" && (
+          <>
+            <div className="form-group">
+              <label htmlFor="headline" className="form-label">
+                Headline
+              </label>
+              <input
+                type="text"
+                id="headline"
+                name="headline"
+                className="form-input"
+                value={formData.headline}
+                onChange={handleChange}
+                placeholder="e.g. Senior Software Engineer"
+                disabled={loading}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="experienceYears" className="form-label">
+                Years of Experience
+              </label>
+              <input
+                type="number"
+                id="experienceYears"
+                name="experienceYears"
+                className="form-input"
+                value={formData.experienceYears}
+                onChange={handleChange}
+                placeholder="0"
+                disabled={loading}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="expertiseArea" className="form-label">
+                Expertise Area
+              </label>
+              <input
+                type="text"
+                id="expertiseArea"
+                name="expertiseArea"
+                className="form-input"
+                value={formData.expertiseArea}
+                onChange={handleChange}
+                placeholder="e.g. Full Stack Development"
+                disabled={loading}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="linkedinUrl" className="form-label">
+                LinkedIn URL (optional)
+              </label>
+              <input
+                type="url"
+                id="linkedinUrl"
+                name="linkedinUrl"
+                className="form-input"
+                value={formData.linkedinUrl}
+                onChange={handleChange}
+                placeholder="https://linkedin.com/in/..."
+                disabled={loading}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="availability" className="form-label">
+                Availability (optional)
+              </label>
+              <input
+                type="text"
+                id="availability"
+                name="availability"
+                className="form-input"
+                value={formData.availability}
+                onChange={handleChange}
+                placeholder="e.g. Weekdays 5-7 PM"
+                disabled={loading}
+              />
+            </div>
+          </>
+        )}
+
+        {/* Mentee-specific fields — used by menteeProfileApi.createMenteeProfile */}
+        {formData.role === "mentee" && (
+          <>
+            <div className="form-group">
+              <label htmlFor="currentRole" className="form-label">
+                Current Role
+              </label>
+              <input
+                type="text"
+                id="currentRole"
+                name="currentRole"
+                className="form-input"
+                value={formData.currentRole}
+                onChange={handleChange}
+                placeholder="e.g. Junior Developer"
+                disabled={loading}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="education" className="form-label">
+                Education
+              </label>
+              <input
+                type="text"
+                id="education"
+                name="education"
+                className="form-input"
+                value={formData.education}
+                onChange={handleChange}
+                placeholder="e.g. B.Tech Computer Science"
+                disabled={loading}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="goals" className="form-label">
+                Goals
+              </label>
+              <input
+                type="text"
+                id="goals"
+                name="goals"
+                className="form-input"
+                value={formData.goals}
+                onChange={handleChange}
+                placeholder="e.g. Become a full-stack developer"
+                disabled={loading}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="interests" className="form-label">
+                Interests
+              </label>
+              <input
+                type="text"
+                id="interests"
+                name="interests"
+                className="form-input"
+                value={formData.interests}
+                onChange={handleChange}
+                placeholder="e.g. Web Development, AI"
+                disabled={loading}
+              />
+            </div>
+          </>
+        )}
         <button type="submit" className="auth-button" disabled={loading}>
           {loading ? "Creating Account..." : "Sign Up"}
         </button>

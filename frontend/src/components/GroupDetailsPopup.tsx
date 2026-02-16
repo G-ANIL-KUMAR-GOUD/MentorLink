@@ -6,11 +6,17 @@ import {
   UserPlus,
   ChevronRight,
   ChevronDown,
+  CheckCircle,
 } from "lucide-react";
 import "../styles/Dashboard.css";
 import type { GroupData } from "./GroupCard";
 import AssignMentorModal from "./AssignMentorModal";
-import { userRoleApi, mentorMenteeMapApi, taskApi } from "../services/api";
+import {
+  userRoleApi,
+  mentorMenteeMapApi,
+  taskApi,
+  feedbackApi,
+} from "../services/api";
 
 interface Mentor {
   id: number;
@@ -52,13 +58,55 @@ const GroupDetailsPopup: React.FC<GroupDetailsPopupProps> = ({
   const [selectedMemberId, setSelectedMemberId] = useState<number | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
+  const [batchMappings, setBatchMappings] = useState<any[]>([]);
 
   // Fetch batch members when popup opens
   useEffect(() => {
     if (isOpen && group) {
       fetchBatchMembers();
+      fetchBatchMappings();
     }
   }, [isOpen, group]);
+
+  // Fetch all mentor-mentee mappings for this batch (mentorMenteeMapApi.getMappingsForBatch)
+  const fetchBatchMappings = async () => {
+    try {
+      const mappings = await mentorMenteeMapApi.getMappingsForBatch(group!.id);
+      setBatchMappings(mappings);
+    } catch (err) {
+      console.error("Error fetching batch mappings:", err);
+      setBatchMappings([]);
+    }
+  };
+
+  // Approve a mentor-mentee mapping request (mentorMenteeMapApi.approveRequest)
+  const handleApproveMapping = async (mapId: number) => {
+    try {
+      await mentorMenteeMapApi.approveRequest(mapId);
+      // Refresh the data
+      await fetchBatchMembers();
+      await fetchBatchMappings();
+    } catch (err) {
+      console.error("Error approving mapping:", err);
+      alert("Failed to approve mapping.");
+    }
+  };
+
+  // Fetch feedback for a specific mapping (feedbackApi.getFeedbackForMapping)
+  const handleViewFeedback = async (mapId: number) => {
+    try {
+      const feedback = await feedbackApi.getFeedbackForMapping(mapId);
+      if (feedback.length > 0) {
+        alert(
+          `Feedback (${feedback.length} entries):\n${feedback.map((f: any) => `Rating: ${f.rating}/5 - ${f.comments}`).join("\n")}`,
+        );
+      } else {
+        alert("No feedback submitted for this mapping yet.");
+      }
+    } catch (err) {
+      console.error("Error fetching feedback:", err);
+    }
+  };
 
   const fetchBatchMembers = async () => {
     try {
@@ -411,6 +459,100 @@ const GroupDetailsPopup: React.FC<GroupDetailsPopupProps> = ({
                             )}
                           </div>
                         </div>
+
+                        {/* Batch Mappings Section — mentorMenteeMapApi */}
+                        {batchMappings.filter(
+                          (m: any) =>
+                            m.mentee?.menteeId === member.id ||
+                            m.mentor?.mentorId === member.id,
+                        ).length > 0 && (
+                          <div className="expanded-section">
+                            <h5 className="expanded-section-title">
+                              Mapping Requests
+                            </h5>
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: "6px",
+                              }}
+                            >
+                              {batchMappings
+                                .filter(
+                                  (m: any) =>
+                                    m.mentee?.menteeId === member.id ||
+                                    m.mentor?.mentorId === member.id,
+                                )
+                                .map((mapping: any) => (
+                                  <div
+                                    key={mapping.mapId}
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "space-between",
+                                      padding: "6px 8px",
+                                      backgroundColor: "#f8f9fa",
+                                      borderRadius: "6px",
+                                      fontSize: "13px",
+                                    }}
+                                  >
+                                    <span>
+                                      {mapping.status === "APPROVED" && (
+                                        <CheckCircle
+                                          size={14}
+                                          style={{
+                                            color: "#10B981",
+                                            marginRight: "4px",
+                                            verticalAlign: "middle",
+                                          }}
+                                        />
+                                      )}
+                                      {mapping.focusArea || "General"} —{" "}
+                                      <strong>{mapping.status}</strong>
+                                    </span>
+                                    <div
+                                      style={{ display: "flex", gap: "6px" }}
+                                    >
+                                      {mapping.status === "REQUESTED" && (
+                                        <button
+                                          onClick={() =>
+                                            handleApproveMapping(mapping.mapId)
+                                          }
+                                          style={{
+                                            padding: "2px 10px",
+                                            backgroundColor: "#10B981",
+                                            color: "white",
+                                            border: "none",
+                                            borderRadius: "4px",
+                                            cursor: "pointer",
+                                            fontSize: "12px",
+                                          }}
+                                        >
+                                          Approve
+                                        </button>
+                                      )}
+                                      <button
+                                        onClick={() =>
+                                          handleViewFeedback(mapping.mapId)
+                                        }
+                                        style={{
+                                          padding: "2px 10px",
+                                          backgroundColor: "#6366f1",
+                                          color: "white",
+                                          border: "none",
+                                          borderRadius: "4px",
+                                          cursor: "pointer",
+                                          fontSize: "12px",
+                                        }}
+                                      >
+                                        Feedback
+                                      </button>
+                                    </div>
+                                  </div>
+                                ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>

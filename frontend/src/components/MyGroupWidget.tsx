@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "../styles/Dashboard.css";
-import { batchApi, userRoleApi } from "../services/api";
+import { batchApi, userRoleApi, analyticsApi } from "../services/api";
 
 interface Group {
   id: number;
   name: string;
   createdBy: string;
   memberCount: number;
+  analytics?: { totalMembers?: number; [key: string]: any };
 }
 
 const MyGroupWidget = () => {
@@ -37,12 +38,31 @@ const MyGroupWidget = () => {
       );
       const batches = await Promise.all(batchPromises);
 
-      const formattedGroups: Group[] = batches.map((batch: any) => ({
-        id: batch.batchId,
-        name: batch.batchName,
-        createdBy: batch.manager?.name || "System Admin",
-        memberCount: batch.memberCount || 0,
-      }));
+      const formattedGroups: Group[] = await Promise.all(
+        batches.map(async (batch: any) => {
+          // Fetch batch analytics (analyticsApi.getBatchAnalytics)
+          let batchAnalytics = {};
+          try {
+            batchAnalytics = await analyticsApi.getBatchAnalytics(
+              batch.batchId,
+            );
+          } catch (err) {
+            console.error(
+              `Error fetching analytics for batch ${batch.batchId}:`,
+              err,
+            );
+          }
+
+          return {
+            id: batch.batchId,
+            name: batch.batchName,
+            createdBy: batch.manager?.name || "System Admin",
+            memberCount:
+              (batchAnalytics as any)?.totalMembers || batch.memberCount || 0,
+            analytics: batchAnalytics,
+          };
+        }),
+      );
 
       setGroups(formattedGroups);
       setError(null);

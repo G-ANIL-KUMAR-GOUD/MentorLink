@@ -1,4 +1,3 @@
-import React from "react";
 import ProfileWidget from "../components/ProfileWidget";
 import AssignedUsersWidget from "../components/AssignedUsersWidget";
 import "../styles/Dashboard.css";

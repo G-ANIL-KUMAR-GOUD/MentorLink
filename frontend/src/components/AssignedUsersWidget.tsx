@@ -2,7 +2,7 @@ import "../styles/Dashboard.css";
 import { ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import MentorDetailsPopup from "./MentorDetailsPopup";
-import { mentorMenteeMapApi, taskApi } from "../services/api";
+import { mentorMenteeMapApi, taskApi, analyticsApi } from "../services/api";
 
 interface AssignedUsersWidgetProps {
   variant: "mentee" | "mentor";
@@ -21,6 +21,7 @@ interface AssignedUser {
   tasks: Task[];
   focusArea?: string;
   status?: string;
+  mapId?: number; // MentorMenteeMap ID for task/feedback operations
 }
 
 export interface Task {
@@ -125,6 +126,7 @@ const AssignedUsersWidget = ({
             focusArea: mapping.focusArea,
             status: mapping.status,
             tasks: tasks,
+            mapId: mapping.mapId,
           };
         }),
       );
@@ -208,6 +210,7 @@ const AssignedUsersWidget = ({
             focusArea: mapping.focusArea,
             status: mapping.status,
             tasks: tasks,
+            mapId: mapping.mapId,
           };
         }),
       );
@@ -375,6 +378,20 @@ const AssignedUsersWidget = ({
   ];
 
   const handleTaskProgressUpdate = (taskId: string, newProgress: number) => {
+    // Update task status on backend via taskApi.updateTaskStatus
+    const numericId = parseInt(taskId);
+    if (!isNaN(numericId)) {
+      const newStatus =
+        newProgress === 100
+          ? "COMPLETED"
+          : newProgress > 0
+            ? "IN_PROGRESS"
+            : "ASSIGNED";
+      taskApi.updateTaskStatus(numericId, newStatus).catch((err) => {
+        console.error("Error updating task status via API:", err);
+      });
+    }
+
     // Update local users state
     const updatedUsers = users.map((user) => {
       if (user.tasks.some((t) => t.id === taskId)) {
@@ -426,8 +443,44 @@ const AssignedUsersWidget = ({
     }
   };
 
+  // Approve a mentor-mentee request (mentorMenteeMapApi.approveRequest)
+  const handleApproveRequest = async (mapId: number) => {
+    try {
+      await mentorMenteeMapApi.approveRequest(mapId);
+      // Refresh the list
+      if (variant === "mentor") {
+        await fetchMentees();
+      } else {
+        await fetchMentors();
+      }
+    } catch (err) {
+      console.error("Error approving request:", err);
+      alert("Failed to approve request.");
+    }
+  };
+
+  // Fetch analytics for mentor/mentee performance
+  const fetchUserAnalytics = async (id: number) => {
+    try {
+      if (variant === "mentor") {
+        const performance = await analyticsApi.getMentorPerformance(id);
+        console.log("Mentor performance:", performance);
+        return performance;
+      } else {
+        const progress = await analyticsApi.getMenteeProgress(id);
+        console.log("Mentee progress:", progress);
+        return progress;
+      }
+    } catch (err) {
+      console.error("Error fetching analytics:", err);
+      return null;
+    }
+  };
+
   const handleUserClick = (user: AssignedUser) => {
     setSelectedUser(user);
+    // Pre-fetch analytics for the selected user
+    fetchUserAnalytics(user.id);
   };
 
   const handleClosePopup = () => {
@@ -479,6 +532,27 @@ const AssignedUsersWidget = ({
                 <span className="mentor-name">{user.name}</span>
                 <span className="mentor-skills">{user.skills.join(", ")}</span>
               </div>
+              {/* Show approve button for REQUESTED status — mentorMenteeMapApi.approveRequest */}
+              {user.status === "REQUESTED" &&
+                user.mapId &&
+                variant === "mentor" && (
+                  <button
+                    className="btn-details"
+                    onClick={() => handleApproveRequest(user.mapId!)}
+                    style={{
+                      marginRight: "8px",
+                      backgroundColor: "#10B981",
+                      color: "white",
+                      borderRadius: "4px",
+                      padding: "4px 10px",
+                      fontSize: "12px",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Approve
+                  </button>
+                )}
               <div className="mentor-progress-container">
                 <div
                   className="mentor-progress-fill"
@@ -502,7 +576,11 @@ const AssignedUsersWidget = ({
       <MentorDetailsPopup
         isOpen={!!selectedUser}
         onClose={handleClosePopup}
-        mentor={selectedUser as any} // Keeping generic for now
+        mentor={
+          selectedUser
+            ? ({ ...selectedUser, mapId: selectedUser.mapId } as any)
+            : null
+        }
         onUpdateProgress={handleTaskProgressUpdate}
         onCreateTask={(task) =>
           selectedUser && handleCreateTask(selectedUser.id, task)
