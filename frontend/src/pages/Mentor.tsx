@@ -1,21 +1,23 @@
-import React from 'react';
-import ProfileWidget from '../components/ProfileWidget';
-import AssignedUsersWidget from '../components/AssignedUsersWidget';
-import '../styles/Dashboard.css';
-
+import React from "react";
+import ProfileWidget from "../components/ProfileWidget";
+import AssignedUsersWidget from "../components/AssignedUsersWidget";
+import "../styles/Dashboard.css";
 
 const Mentor = () => {
-    return (
-        <div className="dashboard-layout">
-            <div className="dashboard-left">
-                <AssignedUsersWidget variant="mentor" />
-            </div>
+  // TODO: Get the actual logged-in user ID from auth context/state
+  const currentUserId = parseInt(localStorage.getItem("userId") || "1");
 
-            <div className="dashboard-right">
-                <ProfileWidget variant="mentor" />
-            </div>
-        </div >
-    );
+  return (
+    <div className="dashboard-layout">
+      <div className="dashboard-left">
+        <AssignedUsersWidget variant="mentor" userId={currentUserId} />
+      </div>
+
+      <div className="dashboard-right">
+        <ProfileWidget variant="mentor" userId={currentUserId} />
+      </div>
+    </div>
+  );
 };
 
 export default Mentor;
