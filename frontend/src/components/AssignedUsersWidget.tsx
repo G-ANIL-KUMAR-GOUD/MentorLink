@@ -2,37 +2,10 @@ import '../styles/Dashboard.css';
 import { ChevronRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import MentorDetailsPopup from './MentorDetailsPopup';
+import { AssignedUser, Task } from '../types';
 
 interface AssignedUsersWidgetProps {
     variant: 'mentee' | 'mentor';
-}
-
-interface AssignedUser { // common interface for Mentor and Mentee
-    id: number;
-    name: string;
-    skills: string[];
-    progress: number;
-    email: string;
-    assignedDate: string;
-    assignedBy: string;
-    tasks: Task[];
-}
-
-export interface Task {
-    id: string;
-    title: string;
-    description: string;
-    progress: number;
-    assignedDate: string;
-    status: 'Not Started' | 'In Progress' | 'Completed';
-    comments?: Comment[];
-}
-
-export interface Comment {
-    id: string;
-    author: string;
-    text: string;
-    avatarColor?: string;
 }
 
 const AssignedUsersWidget = ({ variant }: AssignedUsersWidgetProps) => {
