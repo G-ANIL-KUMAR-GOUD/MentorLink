@@ -1,11 +1,20 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import '../styles/Layout.css';
 import logo from '../assets/synchrony_logo_dark.png';
 
 const Header = () => {
-    const userFilename = "H";
+    const { user, logout } = useAuth();
+    const navigate = useNavigate();
+
+    const userInitial = user?.firstName ? user.firstName.charAt(0).toUpperCase() : 'U';
+
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
+    };
 
     return (
         <header className="main-header">
@@ -15,13 +24,17 @@ const Header = () => {
             </div>
 
             <div className="header-right">
-                <Link to="/faq" className="nav-link">FAQs</Link>
+                <a href="#faq" className="nav-link">FAQs</a>
 
                 <div className="user-controls">
-                    <div className="profile-icon">
-                        {userFilename}
+                    <div className="profile-icon" title={user?.email}>
+                        {userInitial}
                     </div>
-                    <button className="logout-button" title="Logout">
+                    <button 
+                        className="logout-button" 
+                        title="Logout"
+                        onClick={handleLogout}
+                    >
                         <LogOut size={18} />
                     </button>
                 </div>
