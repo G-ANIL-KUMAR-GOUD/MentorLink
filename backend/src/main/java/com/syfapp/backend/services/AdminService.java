@@ -1,6 +1,7 @@
 package com.syfapp.backend.services;
 
 import com.syfapp.backend.dtos.AdminDashboardDTO;
+import com.syfapp.backend.dtos.UserResponseDTO;
 import com.syfapp.backend.models.Batch;
 import com.syfapp.backend.models.Role;
 import com.syfapp.backend.models.User;
@@ -26,7 +27,6 @@ public class AdminService {
     private final UserRoleRepository userRoleRepository;
     private final PasswordEncoder passwordEncoder;
 
-
     public User createManager(User user) {
 
         user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
@@ -48,7 +48,6 @@ public class AdminService {
         return savedUser;
     }
 
-
     // Assign Manager to a Batch
     public String assignManagerToBatch(Long batchId, Long managerId) {
         Batch batch = batchRepository.findById(batchId)
@@ -57,7 +56,7 @@ public class AdminService {
                 .orElseThrow(() -> new RuntimeException("Manager not found"));
         batch.setManager(manager);
         batchRepository.save(batch);
-        return "Manager with id "+ managerId +" is Assigned for batch "+batchId;
+        return "Manager with id " + managerId + " is Assigned for batch " + batchId;
     }
 
     // View all batches with managers
@@ -91,6 +90,27 @@ public class AdminService {
                 .completedTasks(completedTasks)
                 .pendingTasks(pendingTasks)
                 .build();
+    }
+
+    public List<UserResponseDTO> getAllUsers() {
+
+        List<User> users = userRepository.findAll();
+
+        List<UserResponseDTO> dtos = users.stream()
+                .map(user -> new UserResponseDTO(
+                        user.getUserId(),
+                        user.getName(),
+                        user.getEmail(),
+                        user.getProfileInfo(),
+                        user.getCreatedAt(),
+                        user.getUpdatedAt(),
+                        user.getUserRoles().stream()
+                                .map(UserRole -> UserRole.getRole())
+                                .toList()))
+                .toList();
+
+        return dtos;
+
     }
 
 }

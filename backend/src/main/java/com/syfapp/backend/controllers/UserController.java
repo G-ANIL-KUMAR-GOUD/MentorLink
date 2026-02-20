@@ -2,6 +2,7 @@ package com.syfapp.backend.controllers;
 
 import com.syfapp.backend.models.User;
 import com.syfapp.backend.services.UserService;
+import com.syfapp.backend.dtos.UserResponseDTO;
 import lombok.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,25 +17,27 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public List<UserResponseDTO> getAllUsers() {
+        return userService.getAllUserDTOs();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        return userService.getUserById(id)
+    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
+        return userService.getUserDTOById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    public UserResponseDTO createUser(@RequestBody User user) {
+        User created = userService.createUser(user);
+        return userService.toDTO(created);
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
-        return userService.updateUser(id, updatedUser);
+    public UserResponseDTO updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
+        User updated = userService.updateUser(id, updatedUser);
+        return userService.toDTO(updated);
     }
 
     @DeleteMapping("/{id}")
@@ -43,4 +46,3 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 }
-
