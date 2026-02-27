@@ -26,6 +26,10 @@ interface UserProfile {
   goals?: string;
   interests?: string;
   skills: string[];
+
+  // batch assignment for mentees
+  batchId?: number;
+  batchName?: string;
 }
 
 interface Skill {
@@ -121,6 +125,8 @@ const ProfileWidget = ({ variant, userId = 1 }: ProfileWidgetProps) => {
         goals: menteeData.goals,
         interests: menteeData.interests,
         skills: menteeData.skills?.map((s: Skill) => s.skillName) || [],
+        batchId: menteeData.batch?.batchId,
+        batchName: menteeData.batch?.batchName,
       });
       setError(null);
     } catch (err) {
@@ -368,6 +374,11 @@ const ProfileWidget = ({ variant, userId = 1 }: ProfileWidgetProps) => {
           <div className="profile-meta">
             <Mail size={14} />
             <span>{user.email}</span>
+            {user.batchName && (
+              <span style={{ marginLeft: "12px" }}>
+                • Batch: {user.batchName}
+              </span>
+            )}
           </div>
         </div>
       </div>

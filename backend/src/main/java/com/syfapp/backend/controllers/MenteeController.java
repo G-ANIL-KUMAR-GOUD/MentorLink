@@ -36,6 +36,11 @@ public class MenteeController {
         return menteeService.assignSkills(id, skillIds);
     }
 
+    @PutMapping("/{id}/batch/{batchId}")
+    public MenteeProfile assignBatch(@PathVariable Long id, @PathVariable Long batchId) {
+        return menteeService.assignBatch(id, batchId);
+    }
+
     @PostMapping("/{id}/skills/{skillId}")
     public MenteeProfile addSkill(@PathVariable Long id, @PathVariable Long skillId) {
         return menteeService.addSkill(id, skillId);

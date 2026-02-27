@@ -16,5 +16,10 @@ public class MenteeProfileDTO {
     private String education;
     private String goals;
     private String interests;
+
+    // include batch information so UI can display assignment
+    private Long batchId;
+    private String batchName;
+
     private Set<String> skills; // skill names only
 }

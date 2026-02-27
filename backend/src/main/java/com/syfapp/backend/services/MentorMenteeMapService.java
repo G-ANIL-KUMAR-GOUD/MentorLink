@@ -36,6 +36,11 @@ public class MentorMenteeMapService {
         map.setBatch(batch);
         map.setFocusArea(focusArea);
         map.setStatus("REQUESTED");
+
+        // also store the mentee's batch on their profile for easier access
+        mentee.setBatch(batch);
+        menteeRepo.save(mentee);
+
         return mapRepository.save(map);
     }
 

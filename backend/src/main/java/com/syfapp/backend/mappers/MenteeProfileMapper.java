@@ -11,6 +11,22 @@ import java.util.stream.Collectors;
 public class MenteeProfileMapper {
     public MenteeProfileDTO toDTO(MenteeProfile profile) {
         Set<String> skillNames = profile.getSkills().stream().map(Skill::getSkillName).collect(Collectors.toSet());
-        return new MenteeProfileDTO(profile.getMenteeId(), profile.getUser().getUserId(), profile.getUser().getName(), profile.getCurrentRole(), profile.getEducation(), profile.getGoals(), profile.getInterests(), skillNames);
+        Long batchId = null;
+        String batchName = null;
+        if (profile.getBatch() != null) {
+            batchId = profile.getBatch().getBatchId();
+            batchName = profile.getBatch().getBatchName();
+        }
+        return new MenteeProfileDTO(
+                profile.getMenteeId(),
+                profile.getUser().getUserId(),
+                profile.getUser().getName(),
+                profile.getCurrentRole(),
+                profile.getEducation(),
+                profile.getGoals(),
+                profile.getInterests(),
+                batchId,
+                batchName,
+                skillNames);
     }
 }

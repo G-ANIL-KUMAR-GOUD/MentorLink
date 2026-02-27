@@ -5,9 +5,11 @@ import com.syfapp.backend.mappers.MenteeProfileMapper;
 import com.syfapp.backend.models.MenteeProfile;
 import com.syfapp.backend.models.Skill;
 import com.syfapp.backend.models.User;
+import com.syfapp.backend.models.Batch;
 import com.syfapp.backend.repositories.MenteeProfileRepository;
 import com.syfapp.backend.repositories.SkillRepository;
 import com.syfapp.backend.repositories.UserRepository;
+import com.syfapp.backend.repositories.BatchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,15 +25,17 @@ public class MenteeProfileController {
     private final MenteeProfileRepository menteeRepo;
     private final UserRepository userRepo;
     private final SkillRepository skillRepo;
+    private final BatchRepository batchRepo;
     private final MenteeProfileMapper mapper;
 
     @PostMapping
     public MenteeProfileDTO createMenteeProfile(@RequestParam Long userId,
-                                                @RequestParam String currentRole,
-                                                @RequestParam String education,
-                                                @RequestParam String goals,
-                                                @RequestParam String interests,
-                                                @RequestParam(required = false) List<Long> skillIds) {
+            @RequestParam String currentRole,
+            @RequestParam String education,
+            @RequestParam String goals,
+            @RequestParam String interests,
+            @RequestParam(required = false) Long batchId,
+            @RequestParam(required = false) List<Long> skillIds) {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -41,6 +45,12 @@ public class MenteeProfileController {
         profile.setEducation(education);
         profile.setGoals(goals);
         profile.setInterests(interests);
+
+        if (batchId != null) {
+            Batch batch = batchRepo.findById(batchId)
+                    .orElseThrow(() -> new RuntimeException("Batch not found"));
+            profile.setBatch(batch);
+        }
 
         if (skillIds != null) {
             Set<Skill> skills = new HashSet<>(skillRepo.findAllById(skillIds));
@@ -55,5 +65,16 @@ public class MenteeProfileController {
         return menteeRepo.findById(id)
                 .map(mapper::toDTO)
                 .orElseThrow(() -> new RuntimeException("Mentee not found"));
+    }
+
+    // allow updating the batch assignment on an existing profile
+    @PutMapping("/{id}/assign-batch/{batchId}")
+    public MenteeProfileDTO assignBatchToProfile(@PathVariable Long id, @PathVariable Long batchId) {
+        MenteeProfile profile = menteeRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Mentee not found"));
+        Batch batch = batchRepo.findById(batchId)
+                .orElseThrow(() -> new RuntimeException("Batch not found"));
+        profile.setBatch(batch);
+        return mapper.toDTO(menteeRepo.save(profile));
     }
 }

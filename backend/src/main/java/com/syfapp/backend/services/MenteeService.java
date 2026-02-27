@@ -2,8 +2,10 @@ package com.syfapp.backend.services;
 
 import com.syfapp.backend.models.MenteeProfile;
 import com.syfapp.backend.models.Skill;
+import com.syfapp.backend.models.Batch;
 import com.syfapp.backend.repositories.MenteeProfileRepository;
 import com.syfapp.backend.repositories.SkillRepository;
+import com.syfapp.backend.repositories.BatchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,7 @@ public class MenteeService {
 
     private final MenteeProfileRepository menteeProfileRepository;
     private final SkillRepository skillRepository;
+    private final BatchRepository batchRepository;
 
     public List<MenteeProfile> getAllMentees() {
         return menteeProfileRepository.findAll();
@@ -53,5 +56,12 @@ public class MenteeService {
         mentee.getSkills().remove(skill);
         return menteeProfileRepository.save(mentee);
     }
-}
 
+    public MenteeProfile assignBatch(Long id, Long batchId) {
+        MenteeProfile mentee = getMenteeById(id);
+        Batch batch = batchRepository.findById(batchId)
+                .orElseThrow(() -> new RuntimeException("Batch not found"));
+        mentee.setBatch(batch);
+        return menteeProfileRepository.save(mentee);
+    }
+}

@@ -92,6 +92,14 @@ export const batchApi = {
     );
     return response.data;
   },
+
+  // Assign mentee to batch
+  assignMentee: async (batchId: number, menteeId: number) => {
+    const response = await api.put(
+      `/batches/${batchId}/assign-mentee/${menteeId}`,
+    );
+    return response.data;
+  },
 };
 
 // ==================== FEEDBACK APIs ====================
@@ -149,6 +157,12 @@ export const menteeApi = {
     return response.data;
   },
 
+  // Assign mentee to batch (updates profile)
+  assignBatch: async (id: number, batchId: number) => {
+    const response = await api.put(`/mentees/${id}/batch/${batchId}`);
+    return response.data;
+  },
+
   // Add single skill to mentee
   addSkill: async (id: number, skillId: number) => {
     const response = await api.post(`/mentees/${id}/skills/${skillId}`);
@@ -171,6 +185,7 @@ export const menteeProfileApi = {
     education: string;
     goals: string;
     interests: string;
+    batchId?: number;
     skillIds?: number[];
   }) => {
     const response = await api.post("/mentee-profiles", null, { params });
@@ -180,6 +195,12 @@ export const menteeProfileApi = {
   // Get mentee profile
   getMenteeProfile: async (id: number) => {
     const response = await api.get(`/mentee-profiles/${id}`);
+    return response.data;
+  },
+
+  // Assign batch to existing profile
+  assignBatch: async (profileId: number, batchId: number) => {
+    const response = await api.put(`/mentee-profiles/${profileId}/assign-batch/${batchId}`);
     return response.data;
   },
 };

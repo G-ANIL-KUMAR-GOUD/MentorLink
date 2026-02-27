@@ -4,6 +4,9 @@ import com.syfapp.backend.models.Batch;
 import com.syfapp.backend.models.User;
 import com.syfapp.backend.repositories.BatchRepository;
 import com.syfapp.backend.repositories.UserRepository;
+import com.syfapp.backend.repositories.MenteeProfileRepository;
+
+import com.syfapp.backend.models.MenteeProfile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +18,7 @@ public class BatchService {
 
     private final BatchRepository batchRepository;
     private final UserRepository userRepository;
+    private final MenteeProfileRepository menteeRepo;
 
     public List<Batch> getAllBatches() {
         return batchRepository.findAll();
@@ -47,5 +51,14 @@ public class BatchService {
                 .orElseThrow(() -> new RuntimeException("Manager not found"));
         batch.setManager(manager);
         return batchRepository.save(batch);
+    }
+
+    public Batch assignMentee(Long batchId, Long menteeId) {
+        Batch batch = getBatchById(batchId);
+        MenteeProfile mentee = menteeRepo.findById(menteeId)
+                .orElseThrow(() -> new RuntimeException("Mentee profile not found"));
+        mentee.setBatch(batch);
+        menteeRepo.save(mentee);
+        return batch;
     }
 }

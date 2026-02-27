@@ -45,4 +45,9 @@ public class BatchController {
     public Batch assignManager(@PathVariable Long batchId, @PathVariable Long managerId) {
         return batchService.assignManager(batchId, managerId);
     }
+
+    @PutMapping("/{batchId}/assign-mentee/{menteeId}")
+    public Batch assignMentee(@PathVariable Long batchId, @PathVariable Long menteeId) {
+        return batchService.assignMentee(batchId, menteeId);
+    }
 }
