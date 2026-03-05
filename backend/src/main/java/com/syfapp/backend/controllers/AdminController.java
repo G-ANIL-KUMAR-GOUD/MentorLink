@@ -24,9 +24,14 @@ public class AdminController {
 
 
     // Create a Manager
-    @PostMapping("/create-manager")
-    public User createManager(@RequestBody User user) {
-        return adminService.createManager(user);
+    @PostMapping("/create-manager/{batchId}")
+    public ResponseEntity<User> createManager(
+            @RequestBody User user,
+            @PathVariable Long batchId) {
+
+        return ResponseEntity.ok(
+                adminService.createManager(user, batchId)
+        );
     }
 
     // Assign Manager to Batch

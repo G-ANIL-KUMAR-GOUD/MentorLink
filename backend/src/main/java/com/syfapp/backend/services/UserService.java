@@ -13,6 +13,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
 
+
     private final UserRepository userRepository;
 
     public List<User> getAllUsers() {
