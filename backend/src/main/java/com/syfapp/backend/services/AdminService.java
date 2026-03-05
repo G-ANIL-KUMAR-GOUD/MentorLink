@@ -17,6 +17,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminService {
 
+    private final UserRoleService userRoleService;
+
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final BatchRepository batchRepository;
@@ -27,26 +29,19 @@ public class AdminService {
     private final PasswordEncoder passwordEncoder;
 
 
-    public User createManager(User user) {
+    public User createManager(User user, Long batchId) {
 
         user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
-
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
 
         User savedUser = userRepository.save(user);
 
-        Role managerRole = roleRepository.findByRoleName("MANAGER")
-                .orElseThrow(() -> new RuntimeException("MANAGER role not found"));
-
-        UserRole userRole = new UserRole();
-        userRole.setUser(savedUser);
-        userRole.setRole(managerRole);
-
-        userRoleRepository.save(userRole);
+        userRoleService.assignRoleToUser(savedUser, "MANAGER", batchId);
 
         return savedUser;
     }
+
 
 
     // Assign Manager to a Batch
